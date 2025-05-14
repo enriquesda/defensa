@@ -11,7 +11,6 @@ import javafx.stage.Stage;
  * Esta clase inicializa la ventana principal y configura el gestor de escenas.
  *
  * @author Enrique
- * @author Alberto
  */
 public class App extends Application {
 
