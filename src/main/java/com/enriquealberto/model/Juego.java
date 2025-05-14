@@ -24,6 +24,7 @@ public class Juego {
     private Map<Posicion, Personaje> entidadesMapa = new HashMap<>();
     private int dificultad;
     private Heroe jugador;
+    private ArrayList<Enemigo> enemigosAutista = new ArrayList<>();
     private ArrayList<Enemigo> enemigosF = new ArrayList<>(); // Enemigos tipo F (fáciles)
     private ArrayList<Enemigo> enemigosM = new ArrayList<>(); // Enemigos tipo M (medios)
     private ArrayList<Enemigo> enemigosD = new ArrayList<>(); // Enemigos tipo D (difíciles)
@@ -188,6 +189,9 @@ public class Juego {
                 case 3:
                     enemigosD.add(enemigo);
                     break;
+                case 4:
+                    enemigosAutista.add(enemigo);
+                    break;
             }
         }
     }
@@ -229,6 +233,11 @@ public class Juego {
             colocarEnemigoEnPosicionAleatoria(copia);
             entidades.add(copia);
         }
+
+        Enemigo copia = enemigosAutista.get(random.nextInt(enemigosAutista.size())).clone();
+        colocarEnemigoEnPosicionAleatoria(copia);
+        entidades.add(copia);
+
 
         Collections.sort(entidades);
     }
@@ -454,28 +463,54 @@ public class Juego {
         int dy = posJugador.getY() - posActual.getY();
         boolean movido = false;
 
-        // Prioriza el movimiento en la dirección con mayor diferencia
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx > 0) {
-                movido = moverDerecha(p);
-                if (!movido)
-                    movido = dy > 0 ? moverAbajo(p) : moverArriba(p);
+        Enemigo enemigo = (Enemigo) p;
+        if (enemigo.getT_enemigo() == 4) {
+            if (Math.abs(dx) > Math.abs(dy)) {
+                if (dx > 0) {
+                    movido = moverIzquierda(p);
+                    if (!movido)
+                        movido = dy > 0 ? moverArriba(p) : moverAbajo(p);
+                } else {
+                    movido = moverDerecha(p);
+                    if (!movido)
+                        movido = dy > 0 ? moverArriba(p) : moverAbajo(p);
+                }
             } else {
-                movido = moverIzquierda(p);
-                if (!movido)
-                    movido = dy > 0 ? moverAbajo(p) : moverArriba(p);
+                if (dy > 0) {
+                    movido = moverArriba(p);
+                    if (!movido)
+                        movido = dx > 0 ? moverIzquierda(p) : moverDerecha(p);
+                } else {
+                    movido = moverAbajo(p);
+                    if (!movido)
+                        movido = dx > 0 ? moverIzquierda(p) : moverDerecha(p);
+                }
             }
-        } else {
-            if (dy > 0) {
-                movido = moverAbajo(p);
-                if (!movido)
-                    movido = dx > 0 ? moverDerecha(p) : moverIzquierda(p);
+        }else{
+            if (Math.abs(dx) > Math.abs(dy)) {
+                if (dx > 0) {
+                    movido = moverDerecha(p);
+                    if (!movido)
+                        movido = dy > 0 ? moverAbajo(p) : moverArriba(p);
+                } else {
+                    movido = moverIzquierda(p);
+                    if (!movido)
+                        movido = dy > 0 ? moverAbajo(p) : moverArriba(p);
+                }
             } else {
-                movido = moverArriba(p);
-                if (!movido)
-                    movido = dx > 0 ? moverDerecha(p) : moverIzquierda(p);
+                if (dy > 0) {
+                    movido = moverAbajo(p);
+                    if (!movido)
+                        movido = dx > 0 ? moverDerecha(p) : moverIzquierda(p);
+                } else {
+                    movido = moverArriba(p);
+                    if (!movido)
+                        movido = dx > 0 ? moverDerecha(p) : moverIzquierda(p);
+                }
             }
         }
+        // Prioriza el movimiento en la dirección con mayor diferencia
+
 
         // Si no pudo moverse hacia el jugador, intenta un movimiento aleatorio
         if (!movido)
